@@ -3,7 +3,7 @@ package com.caopdecode.subscribly.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Plans")
+@Table(name = "plans")
 public class Plan {
 
     @Id
