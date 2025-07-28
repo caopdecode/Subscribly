@@ -82,6 +82,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         sub.setEndDate(sub.getEndDate().plusDays(sub.getPlan().getDurationDays()));
         subscriptionRepository.save(sub);
+        notificationService.sendNotification(
+                sub.getUser().getEmail(),
+                "Thanks for renew your subscription to the plan " + sub.getPlan().getName() + "!\n" +
+                        "Your subscription is active until " + sub.getEndDate().toString()
+        );
     }
 
     @Override
@@ -95,5 +100,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         sub.setStatus(SubscriptionStatus.CANCELLED);
         subscriptionRepository.save(sub);
+        notificationService.sendNotification(
+                sub.getUser().getEmail(),
+                "Your subscription is cancelled, we hope see you again " + sub.getPlan().getName()
+        );
     }
 }

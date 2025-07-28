@@ -30,7 +30,7 @@ public class SubscriptionController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<List<SubscriptionResponse>> getByUser(@PathVariable String email){
+    public ResponseEntity<List<SubscriptionResponse>> getByUser(@RequestParam String email){
         return ResponseEntity.ok(subscriptionService.getSubscriptionsByUser(email));
     }
 

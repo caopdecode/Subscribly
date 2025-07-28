@@ -29,7 +29,7 @@ public class PaymentController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<List<PaymentResponse>> getPayments(@PathVariable String email){
+    public ResponseEntity<List<PaymentResponse>> getPayments(@RequestParam String email){
         return ResponseEntity.ok(paymentService.getPaymentsByUser(email));
     }
 }
