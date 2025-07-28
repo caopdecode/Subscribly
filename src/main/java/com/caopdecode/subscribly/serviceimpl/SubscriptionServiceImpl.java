@@ -4,7 +4,9 @@ import com.caopdecode.subscribly.dto.SubscriptionDTO;
 import com.caopdecode.subscribly.dto.SubscriptionResponse;
 import com.caopdecode.subscribly.model.Plan;
 import com.caopdecode.subscribly.model.Subscription;
+import com.caopdecode.subscribly.model.SubscriptionStatus;
 import com.caopdecode.subscribly.model.User;
+import com.caopdecode.subscribly.notification.NotificationService;
 import com.caopdecode.subscribly.repository.PlanRepository;
 import com.caopdecode.subscribly.repository.SubscriptionRepository;
 import com.caopdecode.subscribly.repository.UserRepository;
@@ -20,11 +22,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final UserRepository userRepository;
     private final PlanRepository planRepository;
     private final SubscriptionRepository subscriptionRepository;
+    private final NotificationService notificationService;
 
-    public SubscriptionServiceImpl(UserRepository userRepository, PlanRepository planRepository, SubscriptionRepository subscriptionRepository) {
+    public SubscriptionServiceImpl(UserRepository userRepository, PlanRepository planRepository, SubscriptionRepository subscriptionRepository, NotificationService notificationService) {
         this.userRepository = userRepository;
         this.planRepository = planRepository;
         this.subscriptionRepository = subscriptionRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -45,7 +49,14 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         subscription.setStartDate(start);
         subscription.setEndDate(end);
 
+        subscription.setStatus(SubscriptionStatus.ACTIVE);
+
         subscriptionRepository.save(subscription);
+        notificationService.sendNotification(
+                user.getEmail(),
+                "Thanks for subscribe to the plan " + plan.getName() + "!\n" +
+                        "Your subscription is active until " + end.toString()
+        );
     }
 
     @Override
@@ -58,5 +69,31 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                         s.getStartDate(),
                         s.getEndDate()
                 )).collect(Collectors.toList());
+    }
+
+    @Override
+    public void renewSubscription(Long id) {
+        Subscription sub = subscriptionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Subscription not found"));
+
+        if(sub.getStatus() != SubscriptionStatus.ACTIVE){
+            throw new IllegalStateException("Only active subscriptions can be renewed");
+        }
+
+        sub.setEndDate(sub.getEndDate().plusDays(sub.getPlan().getDurationDays()));
+        subscriptionRepository.save(sub);
+    }
+
+    @Override
+    public void cancelSubscription(Long id){
+        Subscription sub = subscriptionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Subscription not found"));
+
+        if(sub.getStatus() == SubscriptionStatus.CANCELLED){
+            throw new IllegalStateException("Subscription is already cancelled");
+        }
+
+        sub.setStatus(SubscriptionStatus.CANCELLED);
+        subscriptionRepository.save(sub);
     }
 }

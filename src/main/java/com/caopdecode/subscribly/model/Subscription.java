@@ -20,6 +20,9 @@ public class Subscription {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    @Enumerated(EnumType.STRING)
+    private SubscriptionStatus status;
+
     public Long getId() {
         return id;
     }
@@ -58,5 +61,13 @@ public class Subscription {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public SubscriptionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(SubscriptionStatus status) {
+        this.status = status;
     }
 }
