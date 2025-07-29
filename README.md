@@ -120,14 +120,14 @@ For example, when a user subscribes to a plan, a message like this is printed:
 
 ```
 📧 [Email sent to: user@example.com]
-Content: 🎉 Welcome to the Premium plan! Your subscription is valid until 2025-09-01.
+Content: Welcome to the Premium plan! Your subscription is valid until 2025-09-01.
 ```
 
 ---
 
 ## 👨‍💻 Author
 
-**Camilo Osorio Páez**  
+**Camilo Osorio Páez | caopdecode**  
 Multimedia Engineer | Backend Developer (Java, Spring Boot) | AI Learner  
 📍 Colombia
 
