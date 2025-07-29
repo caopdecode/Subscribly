@@ -28,7 +28,7 @@ public class PaymentController {
         }
     }
 
-    @GetMapping("/{email}")
+    @GetMapping
     public ResponseEntity<List<PaymentResponse>> getPayments(@RequestParam String email){
         return ResponseEntity.ok(paymentService.getPaymentsByUser(email));
     }

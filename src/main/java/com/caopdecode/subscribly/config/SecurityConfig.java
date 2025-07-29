@@ -14,7 +14,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf->csrf.disable()).authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/users/register", "/api/users/login", "/api/plans", "/api/subscriptions", "/api/subscriptions/cancel", "/api/subscriptions/renew", "/api/payments", "/api/payments/", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/api/users/register", "/api/users/login", "/api/plans/**", "/api/subscriptions/**", "/api/subscriptions/cancel", "/api/subscriptions/renew", "/api/payments/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated());
         return http.build();
     }

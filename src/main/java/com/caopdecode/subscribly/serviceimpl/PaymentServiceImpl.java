@@ -5,6 +5,7 @@ import com.caopdecode.subscribly.dto.PaymentResponse;
 import com.caopdecode.subscribly.model.Payment;
 import com.caopdecode.subscribly.model.PaymentStatus;
 import com.caopdecode.subscribly.model.Subscription;
+import com.caopdecode.subscribly.notification.NotificationService;
 import com.caopdecode.subscribly.repository.PaymentRepository;
 import com.caopdecode.subscribly.repository.SubscriptionRepository;
 import com.caopdecode.subscribly.service.PaymentService;
@@ -19,10 +20,12 @@ import java.util.stream.Collectors;
 public class PaymentServiceImpl implements PaymentService {
     private final SubscriptionRepository subscriptionRepository;
     private final PaymentRepository paymentRepository;
+    private final NotificationService notificationService;
 
-    public PaymentServiceImpl(SubscriptionRepository subscriptionRepository, PaymentRepository paymentRepository) {
+    public PaymentServiceImpl(SubscriptionRepository subscriptionRepository, PaymentRepository paymentRepository, NotificationService notificationService) {
         this.subscriptionRepository = subscriptionRepository;
         this.paymentRepository = paymentRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -42,6 +45,11 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setTransactionId(UUID.randomUUID().toString());
 
         paymentRepository.save(payment);
+
+        notificationService.sendNotification(
+                sub.getUser().getEmail(),
+                "Thanks for your payment to the plan " + sub.getPlan().getName()
+        );
     }
 
     @Override
